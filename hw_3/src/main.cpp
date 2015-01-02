@@ -4,10 +4,11 @@
 #include "Character.h"
 #include "CharacterManageSystem.h"
 #include "Camera.h"
+#include "Mouse.h"
 
 VIEWPORTid viewportID;	//major viewe port
 SCENEid sceneID;	//3d scene
-OBJECTid cameraID, cameraBaseID, terrainID, lightID;
+OBJECTid cameraID, terrainID, lightID;
 CHARACTERid actorID;
 ACTIONid idleID, runID, curPoseID;
 
@@ -18,6 +19,7 @@ Camera camera;
 
 CharacterManageSystem chrMgtSystem;
 
+Mouse mouseInput;
 
 BOOL4 DIR_KEYDOWN[4] = {FALSE, FALSE, FALSE, FALSE};
 BOOL4 first_switch_action = FALSE;
@@ -26,11 +28,15 @@ char dbg_msgS[256];
 
 //global value
 
+int wndWidth = 1024;
+int wndHeight = 768;
+int viewPortWidth = 1024;
+int viewPortHeight = 768;
 
 int frame = 0;
 
 int oldX, oldY, oldXM, oldYM, oldXMM, oldYMM;
-std::map<MotionState, ACTIONid> state2ActionTable;
+std::map<ActorState, ACTIONid> state2ActionTable;
 //BOOL4 poseChange = FALSE;
 
 //hotkey callback
@@ -50,6 +56,7 @@ void InitZoom(int, int);
 void ZoomCam(int, int);
 void ChangeActor(BYTE code, BOOL4 value);
 void setCamera();
+void updateMousePos(int, int);
 
 void FyMain(int argc, char **argv)
 {
@@ -57,7 +64,7 @@ void FyMain(int argc, char **argv)
 	std::cout<<"Start Game";
 	std::cout.flush();
 	//create a new window
-	FyStartFlyWin32("HomeWork 3 - with Fly2", 0, 0, 1024, 768, FALSE);
+	FyStartFlyWin32("HomeWork 3 - with Fly2", 0, 0, wndWidth, wndHeight, FALSE);
 	
 	//set up path
 	FySetShaderPath("..\\Data\\NTU5\\Shaders");
@@ -66,7 +73,7 @@ void FyMain(int argc, char **argv)
 	FySetScenePath("..\\Data\\NTU5\\Scenes");
 
 	//create a viewport
-	viewportID = FyCreateViewport(0, 0, 1024, 768);
+	viewportID = FyCreateViewport(0, 0, viewPortWidth, viewPortHeight);
 	FnViewport viewport(viewportID);
 
 	//create 3D scene
@@ -114,6 +121,11 @@ void FyMain(int argc, char **argv)
 	chrMgtSystem.addCharacter(actor, true);
 	chrMgtSystem.addCharacter(ememy, false);
 
+	cameraID = scene.CreateObject(CAMERA);
+	FnCamera camera;
+	camera.ID(cameraID);
+	camera.SetNearPlane(5.0f);
+	camera.SetFarPlane(100000.0f);
 	setCamera();
    // setup a point light
    /*
@@ -141,7 +153,7 @@ void FyMain(int argc, char **argv)
    FyBindMouseFunction(LEFT_MOUSE, InitPivot, PivotCam, NULL, NULL);
    FyBindMouseFunction(MIDDLE_MOUSE, InitZoom, ZoomCam, NULL, NULL);
    FyBindMouseFunction(RIGHT_MOUSE, InitMove, MoveCam, NULL, NULL);
-
+   FyBindMouseMoveFunction(updateMousePos);
    //bind timers, frame rate = 30 fps
    FyBindTimer(0, 30.0f, GameAI, TRUE);
    FyBindTimer(1, 30.0f, RenderIt, TRUE);
@@ -161,7 +173,7 @@ void GameAI(int skip)
 	chrMgtSystem.update(skip); //人物狀態的更新
 	actorID = chrMgtSystem.getActorID();
    //Camera狀態的更新
-	camera.GameAIupdate(skip);
+	camera.update(skip);
 	//camera.resetCamera();
 }
 
@@ -202,24 +214,23 @@ void RenderIt(int skip){
 	text.Write(string, 20, 20, 255, 0, 0);
 
 	//get camera's data
-	camera.getCamera().GetPosition(pos);
-	camera.getCamera().GetDirection(fDir, uDir);
+	camera.getCameraPos(pos);
+	camera.getCameraDir(fDir, uDir);
+
+	float fCameraAngle = camera.getCameraAngle();
 
 	char posS[256], fDirS[256], uDirS[256];
 	sprintf_s(posS, "pos: %8.3f %8.3f %8.3f", pos[0], pos[1], pos[2]);
 	sprintf_s(fDirS, "facing: %8.3f %8.3f %8.3f", fDir[0], fDir[1], fDir[2]);
 	sprintf_s(uDirS, "up: %8.3f %8.3f %8.3f", uDir[0], uDir[1], uDir[2]);
 
-    text.Write(posS, 20, 35, 255, 255, 0);
-    text.Write(fDirS, 20, 50, 255, 255, 0);
-    text.Write(uDirS, 20, 65, 255, 255, 0);
-
-	//get camera base's data
-	camera.getCameraBase().GetPosition(pos);
-	camera.getCameraBase().GetDirection(fDir, uDir);
-	sprintf_s(posS, "pos: %8.3f %8.3f %8.3f", pos[0], pos[1], pos[2]);
-	sprintf_s(fDirS, "facing: %8.3f %8.3f %8.3f", fDir[0], fDir[1], fDir[2]);
-	sprintf_s(uDirS, "up: %8.3f %8.3f %8.3f", uDir[0], uDir[1], uDir[2]);
+	char sCameraAngle[256], sMousePosX[256], sMousePosY[256];
+	sprintf_s(sCameraAngle, "camera angle: %8.3f", fCameraAngle);
+	sprintf_s(sMousePosX, "mouse X %d ", mouseInput.mousePosX);
+	sprintf_s(sMousePosY, "mouse Y %d ", mouseInput.mousePosY);
+	text.Write(sCameraAngle, 20, 35, 255, 255, 0);
+	text.Write(sMousePosX, 20, 50, 255, 255, 0);
+	text.Write(sMousePosY, 20, 65, 255, 255, 0);
     
 	text.Write(posS, 20, 80, 255, 255, 0);
     text.Write(fDirS, 20, 95, 255, 255, 0);
@@ -296,6 +307,10 @@ void PivotCam(int x, int y)
       model.Rotate(X_AXIS, (float) 0.2*(y - oldY), GLOBAL);
       oldY = y;
    }
+}
+
+void updateMousePos(int x, int y){
+	mouseInput.setMouseNewPos(x, y);
 }
 
 
@@ -375,9 +390,7 @@ void ChangeActor(BYTE code, BOOL4 value)
 void setCamera()
 {
 	//初始化攝影機
-	camera.initialize(sceneID, terrainID, chrMgtSystem.getCameraActor());
-	cameraID = camera.getCameraId();
-	cameraBaseID = camera.getCameraBaseId();
+	camera.initialize(cameraID, terrainID, chrMgtSystem.getCameraActor());
 	//放好相機
 	camera.resetCamera();
 }

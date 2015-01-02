@@ -1,5 +1,6 @@
 #include "Character.h"
 
+/*
 Character::Character(void)
 	:m_sceneId(NULL),
 	 m_terrianId(NULL),
@@ -38,6 +39,7 @@ void Character::initialize(const SCENEid &sceneId,
 	strcpy_s(cstr, m_meshFileName.length()+1, m_meshFileName.c_str());
 	m_actorId =  scene.LoadCharacter(cstr);
 	m_actor.ID(m_actorId);
+
 
 	//put on terrian
 	FnRoom room(terrianRoomId);
@@ -282,4 +284,266 @@ int Character::update(int skip, MotionState newState){
 	m_actor.GetDirection(m_fDir3, m_uDir3);
 	collision = success;
 	return success;
+}
+*/
+
+
+Character::Character()
+:m_sceneId(NULL),
+m_terrianId(NULL),
+m_actorId(NULL),
+m_dummyCameraId(NULL),
+m_terrianRoomId(NULL),
+m_curActionId(NULL),
+m_isOnCameraFocus(false),
+blood(100),
+m_rotateVel(0.02),
+m_moveVel(0.1),
+actorHeight(160)
+{
+	m_meshFileName = "Lyubu2";
+	this->setCharacterBlood(100, 100);
+}
+
+
+Character::~Character()
+{
+}
+
+void Character::initialize(const SCENEid &sceneId,
+	const OBJECTid &dummyCameraId,
+	const ROOMid &terrianRoomId,
+	float *fDir,
+	float *uDir,
+	float *pos ){
+	// Since character size seems to be invisible from users, we had to set it ourselves.
+	actorHeight = 80.0f;
+
+	m_sceneId = sceneId;
+	m_dummyCameraId = dummyCameraId;
+	m_terrianRoomId = terrianRoomId;
+
+	//load character
+	FnScene scene(sceneId);
+	char *cstr = new char[m_meshFileName.length() + 1];
+	strcpy_s(cstr, m_meshFileName.length() + 1, m_meshFileName.c_str());
+	m_actorId = scene.LoadCharacter(cstr);
+	m_actor.ID(m_actorId);
+
+
+	//put on terrian
+	FnRoom room(terrianRoomId);
+	room.AddObject(m_actorId);
+
+	if (fDir == NULL){
+		m_fDir3[0] = 1; m_fDir3[1] = 0; m_fDir3[2] = 0;
+	}
+	else{
+		m_fDir3[0] = fDir[0]; m_fDir3[1] = fDir[1]; m_fDir3[2] = fDir[2];
+	}
+
+	if (uDir == NULL){
+		m_uDir3[0] = 0, m_uDir3[1] = 0; m_uDir3[2] = 1;
+	}
+	else{
+		m_uDir3[0] = uDir[0], m_uDir3[1] = uDir[1]; m_uDir3[2] = uDir[2];
+	}
+
+	if (pos == NULL){
+		m_fPos3[0] = 3569.0; m_fPos3[1] = -3208.0; m_fPos3[2] = 0;
+	}
+	else{
+		m_fPos3[0] = pos[0]; m_fPos3[1] = pos[1]; m_fPos3[2] = pos[2];
+	}
+
+	m_actor.SetDirection(m_fDir3, m_uDir3);
+	m_actor.SetTerrainRoom(terrianRoomId, 400.f);
+
+	m_actor.PutOnTerrain(m_fPos3, 200);
+	m_actor.SetPosition(m_fPos3);
+
+	//set up action
+	if (!m_meshFileName.compare("Lyubu2")){
+		ACTIONid idleId = m_actor.GetBodyAction(NULL, "Idle");
+		ACTIONid runId = m_actor.GetBodyAction(NULL, "Run");
+		ACTIONid walkId = m_actor.GetBodyAction(NULL, "Walk");
+		ACTIONid dieId = m_actor.GetBodyAction(NULL, "Die");
+		ACTIONid damagedId = m_actor.GetBodyAction(NULL, "HeavyDamaged");
+		ACTIONid attackId = m_actor.GetBodyAction(NULL, "NormalAttack1");
+
+		m_mapIndex2Action.insert(std::pair<ActionType, ACTIONid>(ACTION_IDLE, idleId));
+		m_mapIndex2Action.insert(std::pair<ActionType, ACTIONid>(ACTION_RUN, runId));
+		m_mapIndex2Action.insert(std::pair<ActionType, ACTIONid>(ACTION_WALK, walkId));
+		m_mapIndex2Action.insert(std::pair<ActionType, ACTIONid>(ACTION_DIE, dieId));
+		m_mapIndex2Action.insert(std::pair<ActionType, ACTIONid>(ACTION_ATTACK, attackId));
+		m_mapIndex2Action.insert(std::pair<ActionType, ACTIONid>(ACTION_DAMAGED, damagedId));
+
+		m_mapState2Action.insert(std::pair<ActorState, ACTIONid>(ActorState::IDLE, idleId));
+		m_mapState2Action.insert(std::pair<ActorState, ACTIONid>(ActorState::DEAD, dieId));
+		m_mapState2Action.insert(std::pair<ActorState, ACTIONid>(ActorState::ATTACK, attackId));
+		m_mapState2Action.insert(std::pair<ActorState, ACTIONid>(ActorState::DAMAGED, damagedId));
+
+		m_mapState2Action.insert(std::pair<ActorState, ACTIONid>(ActorState::MOVE_BACKWARD, runId));
+		m_mapState2Action.insert(std::pair<ActorState, ACTIONid>(ActorState::MOVE_FORWARD, runId));
+		m_mapState2Action.insert(std::pair<ActorState, ACTIONid>(ActorState::MOVE_LEFT, runId));
+		m_mapState2Action.insert(std::pair<ActorState, ACTIONid>(ActorState::MOVE_RIGHT, runId));
+		m_mapState2Action.insert(std::pair<ActorState, ACTIONid>(ActorState::MOVE_LEFT, runId));
+		m_mapState2Action.insert(std::pair<ActorState, ACTIONid>(ActorState::TURN_LEFT, runId));
+
+	}
+	else if (!m_meshFileName.compare("Donzo2")){
+		ACTIONid idleId = m_actor.GetBodyAction(NULL, "Idle");
+		ACTIONid runId = m_actor.GetBodyAction(NULL, "Run");
+		ACTIONid walkId = m_actor.GetBodyAction(NULL, "Walk");
+		ACTIONid dieId = m_actor.GetBodyAction(NULL, "Die");
+		ACTIONid attackId = m_actor.GetBodyAction(NULL, "Attack1");
+		ACTIONid damagedId = m_actor.GetBodyAction(NULL, "DamageL");
+
+		m_mapIndex2Action.insert(std::pair<ActionType, ACTIONid>(ACTION_IDLE, idleId));
+		m_mapIndex2Action.insert(std::pair<ActionType, ACTIONid>(ACTION_RUN, runId));
+		m_mapIndex2Action.insert(std::pair<ActionType, ACTIONid>(ACTION_WALK, walkId));
+		m_mapIndex2Action.insert(std::pair<ActionType, ACTIONid>(ACTION_DIE, dieId));
+		m_mapIndex2Action.insert(std::pair<ActionType, ACTIONid>(ACTION_ATTACK, attackId));
+		m_mapIndex2Action.insert(std::pair<ActionType, ACTIONid>(ACTION_DAMAGED, damagedId));
+
+		m_mapState2Action.insert(std::pair<ActorState, ACTIONid>(ActorState::IDLE, idleId));
+		m_mapState2Action.insert(std::pair<ActorState, ACTIONid>(ActorState::DEAD, dieId));
+		m_mapState2Action.insert(std::pair<ActorState, ACTIONid>(ActorState::ATTACK, attackId));
+		m_mapState2Action.insert(std::pair<ActorState, ACTIONid>(ActorState::DAMAGED, damagedId));
+
+		m_mapState2Action.insert(std::pair<ActorState, ACTIONid>(ActorState::MOVE_BACKWARD, runId));
+		m_mapState2Action.insert(std::pair<ActorState, ACTIONid>(ActorState::MOVE_FORWARD, runId));
+		m_mapState2Action.insert(std::pair<ActorState, ACTIONid>(ActorState::MOVE_LEFT, runId));
+		m_mapState2Action.insert(std::pair<ActorState, ACTIONid>(ActorState::TURN_LEFT, runId));
+		m_mapState2Action.insert(std::pair<ActorState, ACTIONid>(ActorState::TURN_RIGHT, runId));
+		m_mapState2Action.insert(std::pair<ActorState, ACTIONid>(ActorState::MOVE_RIGHT, runId));
+
+	}
+	else{
+		return;
+	}
+	m_curActionId = m_mapIndex2Action[ACTION_IDLE];
+	m_actor.SetCurrentAction(NULL, 0, m_curActionId);
+	m_actor.Play(START, 0.0f, FALSE, TRUE);
+
+	m_curState = ActorState::IDLE;
+
+	m_rotateVel = 15;
+	m_moveVel = 10;
+
+
+}
+
+
+void Character::update(int skip, int newState){
+
+	bool success = false;
+	if (m_curState == ActorState::COOL_DOWN){
+		m_coolDownCnt--;
+		if (m_coolDownCnt < 0){
+			newState = ActorState::IDLE;
+		}
+		else{
+			newState = ActorState::COOL_DOWN;
+		}
+	}else if (m_curState == ActorState::DEAD){
+		newState = ActorState::DEAD;
+	}
+	else{
+		//switch (newState){		//ensure state is one of defined state
+		//case (int)ActorState::IDLE:
+		//case (int)ActorState::MOVE_FORWARD:
+		//case (int)ActorState::MOVE_BACKWARD:
+		//case (int)ActorState::MOVE_LEFT:
+		//case (int)ActorState::MOVE_RIGHT:
+		//case (int)ActorState::TURN_LEFT:
+		//case (int)ActorState::TURN_RIGHT:
+		//case (int)ActorState::ATTACK:
+		//case (int)ActorState::DAMAGED:
+		//	break;
+		//default:
+		//	newState = m_curState;
+		//}
+		
+	}
+
+	//animation
+
+	if (newState == (int)ActorState::COOL_DOWN){		//if is in cd, 
+		m_actor.Play(LOOP, (float)skip, FALSE, TRUE);
+	}else if(m_mapState2Action[(ActorState)newState] != m_curActionId){		//action changed
+		m_curActionId = m_mapState2Action[(ActorState)newState];
+		m_actor.SetCurrentAction(NULL, 0, m_curActionId, 5.0f);
+		m_actor.Play(START, 0.0f, FALSE, TRUE);
+	}
+	else{													//action not change;
+		if (m_curActionId == m_mapIndex2Action[ActionType::ACTION_DIE]){
+			m_actor.Play(ONCE, (float)skip, FALSE, TRUE);
+		}
+		else{
+			m_actor.Play(LOOP, (float)skip, FALSE, TRUE);
+		}
+	}
+
+	if (newState&ActorState::IDLE){
+		//
+	}
+
+	if (newState&ActorState::DEAD){
+		//
+	}
+
+	if (newState&ActorState::MOVE_FORWARD){
+		success = m_actor.MoveForward(m_moveVel, TRUE, false, FALSE, TRUE);
+	}
+
+	if (newState&ActorState::MOVE_BACKWARD){
+		success = m_actor.MoveForward(-m_moveVel, TRUE, false, FALSE, TRUE);
+	}
+
+	if (newState&ActorState::MOVE_LEFT){
+		success = m_actor.MoveRight(-0.5*m_moveVel, TRUE, false, FALSE, TRUE);
+	}
+
+	if (newState&ActorState::MOVE_RIGHT){
+		success = m_actor.MoveRight(0.5*m_moveVel, TRUE, false, FALSE, TRUE);
+	}
+
+	if (newState&ActorState::TURN_LEFT){
+		float mouseRotate = mouseInput.mouseVelX;
+		
+		if (mouseRotate < -m_rotateVel){
+			mouseRotate = -m_rotateVel;
+		}
+		if (mouseRotate == 0){
+			mouseRotate = -1;
+		}
+		
+		success = m_actor.TurnRight(mouseRotate);
+		mouseInput.mouseVelX = 0;
+
+	}
+
+	if (newState&ActorState::TURN_RIGHT){
+		float mouseRotate = mouseInput.mouseVelX;
+		if (mouseRotate > m_rotateVel){
+			mouseRotate = m_rotateVel;
+		}
+		if (mouseRotate == 0){
+			mouseRotate = 1;
+		}
+		success = m_actor.TurnRight(mouseRotate);
+		mouseInput.mouseVelX = 0;
+	}
+
+	if (newState&ActorState::DAMAGED){
+		m_coolDownCnt = 15;
+		newState = ActorState::COOL_DOWN;
+	}
+
+	//update state 
+	m_curState = (ActorState)newState;
+	m_actor.GetPosition(m_fPos3);
+	m_actor.GetDirection(m_fDir3, m_uDir3);
+	isCollision = success;
 }
