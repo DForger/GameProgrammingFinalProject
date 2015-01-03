@@ -80,6 +80,8 @@ void FyMain(int argc, char **argv)
 	viewportID = FyCreateViewport(0, 0, viewPortWidth, viewPortHeight);
 	FnViewport viewport(viewportID);
 
+	mouseInput.setWindowSize(wndWidth, wndHeight);
+
 	//create 3D scene
 	sceneID = FyCreateScene(10);
 	FnScene scene(sceneID);
@@ -168,7 +170,7 @@ void FyMain(int argc, char **argv)
    FyBindMouseFunction(LEFT_MOUSE, InitPivot, PivotCam, NULL, NULL);
    FyBindMouseFunction(MIDDLE_MOUSE, InitZoom, ZoomCam, NULL, NULL);
    FyBindMouseFunction(RIGHT_MOUSE, InitMove, MoveCam, NULL, NULL);
-   FyBindMouseMoveFunction(updateMousePos);
+   //FyBindMouseMoveFunction(updateMousePos);
    //bind timers, frame rate = 30 fps
    FyBindTimer(0, 30.0f, GameAI, TRUE);
    FyBindTimer(1, 30.0f, RenderIt, TRUE);
@@ -195,6 +197,7 @@ void GameAI(int skip)
 void RenderIt(int skip){
 	float pos[3], fDir[3], uDir[3];
 
+	mouseInput.update();
 
 	FnViewport vp;
 

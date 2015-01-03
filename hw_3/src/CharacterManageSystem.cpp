@@ -61,11 +61,11 @@ void CharacterManageSystem::updateCharacterInputs(){
 		newState = newState | MotionState::ATTACK;
 		std::cout<<"attak key\n";
 	}
-	if ((mouseInput.mouseVelX > 0)||(mouseInput.mousePosX>(wndWidth*0.9))){
+	if (mouseInput.mouseVelX > 0){
 		newState = newState | MotionState::TURN_RIGHT;
 	}
 
-	if ((mouseInput.mouseVelX < 0) || (mouseInput.mousePosX < 10)){
+	if(mouseInput.mouseVelX < 0){
 		newState = newState | MotionState::TURN_LEFT;
 	}
 

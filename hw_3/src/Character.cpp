@@ -298,7 +298,8 @@ m_curActionId(NULL),
 m_isOnCameraFocus(false),
 m_rotateVel(0.02),
 m_moveVel(0.1),
-actorHeight(160)
+actorHeight(160),
+m_mouseSensy(0.07)
 {
 	m_meshFileName = "Lyubu2";
 	this->setCharacterBlood(100, 100);
@@ -442,6 +443,7 @@ void Character::initialize(const SCENEid &sceneId,
 		m_mapState2Action.insert(std::pair<MotionState, ACTIONid>(MotionState::TURN_LEFT, runId));
 	}
 
+	
 	m_curActionId = m_mapIndex2Action[ACTION_IDLE];
 	m_actor.SetCurrentAction(NULL, 0, m_curActionId);
 	m_actor.Play(START, 0.0f, FALSE, TRUE);
@@ -449,7 +451,7 @@ void Character::initialize(const SCENEid &sceneId,
 	m_curState = MotionState::IDLE;
 	m_curActionType = ActionType::ACTION_IDLE;
 
-	m_rotateVel = 15;
+	m_rotateVel = 10;
 	m_moveVel = 10;
 
 
@@ -557,27 +559,23 @@ void Character::update(int skip, int newState){
 	}
 
 	if (newState&MotionState::TURN_LEFT){
-		float mouseRotate = mouseInput.mouseVelX;
+		float mouseRotate = mouseInput.mouseVelX*m_mouseSensy;
 		
 		if (mouseRotate < -m_rotateVel){
 			mouseRotate = -m_rotateVel;
 		}
-		if (mouseRotate == 0){
-			mouseRotate = -1;
-		}
+
 		
 		success = m_actor.TurnRight(mouseRotate);
 		mouseInput.mouseVelX = 0;
 	}
 
 	if (newState&MotionState::TURN_RIGHT){
-		float mouseRotate = mouseInput.mouseVelX;
+		float mouseRotate = mouseInput.mouseVelX*m_mouseSensy;
 		if (mouseRotate > m_rotateVel){
 			mouseRotate = m_rotateVel;
 		}
-		if (mouseRotate == 0){
-			mouseRotate = 1;
-		}
+
 		success = m_actor.TurnRight(mouseRotate);
 		mouseInput.mouseVelX = 0;
 	}

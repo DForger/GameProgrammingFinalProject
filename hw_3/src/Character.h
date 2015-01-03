@@ -37,6 +37,7 @@ enum MotionState{
 	MOVE_RIGHT = MOVE_LEFT << 1,
 	TURN_LEFT = MOVE_RIGHT << 1,
 	TURN_RIGHT = TURN_LEFT << 1,
+	JUMP = TURN_RIGHT << 1,
 	MOVE_LEFT_FORWARD = MOVE_LEFT + MOVE_FORWARD,
 	MOVE_LEFT_BACKWARD = MOVE_LEFT + MOVE_BACKWARD,
 	MOVE_RIGHT_FORWARD = MOVE_RIGHT + MOVE_FORWARD,
@@ -496,6 +497,7 @@ private:
 	//property
 	float m_fPos3[3], m_fDir3[3], m_uDir3[3];
 	float m_moveVel, m_rotateVel;
+	float m_mouseSensy;
 
 
 	//audio mapping

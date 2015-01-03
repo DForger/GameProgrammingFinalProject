@@ -250,10 +250,10 @@ void moveCamera(int action, OBJECTid tID, OBJECTid cID, OBJECTid dummyID, OBJECT
 */
 
 Camera::Camera(){
-	m_fMouseVel2AngleVelFactor = 0.5;
+	m_fMouseSensy = 0.005;
 	m_fMaxVerAngle = 0.5;
 	m_fMinVerAngle = -0.8;
-	m_fMaxVerAngleVel = 0.03;
+	m_fMaxVerAngleVel = 0.04;
 }
 
 void Camera::initialize(OBJECTid cameraId, OBJECTid terrianId, Character* parent){
@@ -269,15 +269,7 @@ void Camera::update(int skip){
 	int mouseVelY = -mouseInput.mouseVelY;
 	mouseInput.mouseVelY = 0;
 
-	if (mouseVelY == 0){
-		if (mouseInput.mousePosY > 0.9*wndHeight){
-			mouseVelY = -1;
-		}
-		else if (mouseInput.mousePosY < 0.1*wndHeight){
-			mouseVelY = 1;
-		}
-	}
-	float fAngleVel = mouseVelY*m_fMouseVel2AngleVelFactor;
+	float fAngleVel = mouseVelY*m_fMouseSensy;
 
 	if (fAngleVel > m_fMaxVerAngleVel){
 		fAngleVel = m_fMaxVerAngleVel;

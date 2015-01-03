@@ -103,10 +103,11 @@ private:
 	FnCamera m_fnCamera;
 
 	float m_fVerAngle;
-	float m_fMouseVel2AngleVelFactor;
+	float m_fMouseSensy;
 	float m_fMaxVerAngle;
 	float m_fMinVerAngle;
 	float m_fMaxVerAngleVel;
+
 
 	float m_pos[3];
 	float m_uDir[3], m_fDir[3];
