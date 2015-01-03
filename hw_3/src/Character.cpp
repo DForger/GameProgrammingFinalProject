@@ -296,7 +296,6 @@ m_dummyCameraId(NULL),
 m_terrianRoomId(NULL),
 m_curActionId(NULL),
 m_isOnCameraFocus(false),
-blood(100),
 m_rotateVel(0.02),
 m_moveVel(0.1),
 actorHeight(160)
@@ -362,21 +361,73 @@ void Character::initialize(const SCENEid &sceneId,
 	m_actor.PutOnTerrain(m_fPos3, 200);
 	m_actor.SetPosition(m_fPos3);
 
+	//set up audio
+	m_audioSourceId = FyCreateAudio();
+	m_fnAudio.ID(m_audioSourceId);
+	{
+		m_mapAudioIndex2FileName.insert(std::pair<int, std::string>(0, ""));
+		m_mapAudioIndex2FileName.insert(std::pair<int, std::string>(1, "male_run_a"));
+		m_mapAudioIndex2FileName.insert(std::pair<int, std::string>(2, "male_die_a"));
+		m_mapAudioIndex2FileName.insert(std::pair<int, std::string>(3, "male_damaged_a"));
+		m_mapAudioIndex2FileName.insert(std::pair<int, std::string>(4, "male_attack_a"));
+	
+		m_mapAudioIndex2PlayMode.insert(std::pair<int, int>(1, LOOP));
+		m_mapAudioIndex2PlayMode.insert(std::pair<int, int>(2, ONCE));
+		m_mapAudioIndex2PlayMode.insert(std::pair<int, int>(3, ONCE));
+		m_mapAudioIndex2PlayMode.insert(std::pair<int, int>(4, ONCE));
+
+		m_mapActionType2AudioIndex.insert(std::pair<ActionType, int>(ACTION_IDLE, 0));
+		m_mapActionType2AudioIndex.insert(std::pair<ActionType, int>(ACTION_RUN, 1));
+		m_mapActionType2AudioIndex.insert(std::pair<ActionType, int>(ACTION_DIE, 2));
+		m_mapActionType2AudioIndex.insert(std::pair<ActionType, int>(ACTION_DAMAGED, 3));
+		m_mapActionType2AudioIndex.insert(std::pair<ActionType, int>(ACTION_ATTACK, 4));
+		
+
+		m_curAudioIndex = NULL;
+	}
+
 	//set up action
-	if (!m_meshFileName.compare("Lyubu2")){
-		ACTIONid idleId = m_actor.GetBodyAction(NULL, "Idle");
-		ACTIONid runId = m_actor.GetBodyAction(NULL, "Run");
-		ACTIONid walkId = m_actor.GetBodyAction(NULL, "Walk");
-		ACTIONid dieId = m_actor.GetBodyAction(NULL, "Die");
-		ACTIONid damagedId = m_actor.GetBodyAction(NULL, "HeavyDamaged");
-		ACTIONid attackId = m_actor.GetBodyAction(NULL, "NormalAttack1");
+	{
+		ACTIONid idleId;
+		ACTIONid runId;
+		ACTIONid walkId;
+		ACTIONid dieId;
+		ACTIONid damagedId;
+		ACTIONid attackId;
+		if (!m_meshFileName.compare("Lyubu2")){
+			idleId = m_actor.GetBodyAction(NULL, "Idle");
+			runId = m_actor.GetBodyAction(NULL, "Run");
+			walkId = m_actor.GetBodyAction(NULL, "Walk");
+			dieId = m_actor.GetBodyAction(NULL, "Die");
+			damagedId = m_actor.GetBodyAction(NULL, "HeavyDamaged");
+			attackId = m_actor.GetBodyAction(NULL, "NormalAttack1");
 
+
+		}
+		else if (!m_meshFileName.compare("Donzo2")){
+			idleId = m_actor.GetBodyAction(NULL, "Idle");
+			runId = m_actor.GetBodyAction(NULL, "Run");
+			walkId = m_actor.GetBodyAction(NULL, "Walk");
+			dieId = m_actor.GetBodyAction(NULL, "Die");
+			attackId = m_actor.GetBodyAction(NULL, "Attack1");
+			damagedId = m_actor.GetBodyAction(NULL, "DamageL");
+		}
+		else{
+			return;
+		}
 		m_mapIndex2Action.insert(std::pair<ActionType, ACTIONid>(ACTION_IDLE, idleId));
 		m_mapIndex2Action.insert(std::pair<ActionType, ACTIONid>(ACTION_RUN, runId));
 		m_mapIndex2Action.insert(std::pair<ActionType, ACTIONid>(ACTION_WALK, walkId));
 		m_mapIndex2Action.insert(std::pair<ActionType, ACTIONid>(ACTION_DIE, dieId));
 		m_mapIndex2Action.insert(std::pair<ActionType, ACTIONid>(ACTION_ATTACK, attackId));
 		m_mapIndex2Action.insert(std::pair<ActionType, ACTIONid>(ACTION_DAMAGED, damagedId));
+
+		m_mapActionId2ActionType.insert(std::pair<ACTIONid, ActionType>(idleId, ACTION_IDLE));
+		m_mapActionId2ActionType.insert(std::pair<ACTIONid, ActionType>(runId, ACTION_RUN));
+		m_mapActionId2ActionType.insert(std::pair<ACTIONid, ActionType>(walkId, ACTION_WALK));
+		m_mapActionId2ActionType.insert(std::pair<ACTIONid, ActionType>(dieId, ACTION_DIE));
+		m_mapActionId2ActionType.insert(std::pair<ACTIONid, ActionType>(attackId, ACTION_ATTACK));
+		m_mapActionId2ActionType.insert(std::pair<ACTIONid, ActionType>(damagedId, ACTION_DAMAGED));
 
 		m_mapState2Action.insert(std::pair<MotionState, ACTIONid>(MotionState::IDLE, idleId));
 		m_mapState2Action.insert(std::pair<MotionState, ACTIONid>(MotionState::DEAD, dieId));
@@ -389,44 +440,14 @@ void Character::initialize(const SCENEid &sceneId,
 		m_mapState2Action.insert(std::pair<MotionState, ACTIONid>(MotionState::MOVE_RIGHT, runId));
 		m_mapState2Action.insert(std::pair<MotionState, ACTIONid>(MotionState::MOVE_LEFT, runId));
 		m_mapState2Action.insert(std::pair<MotionState, ACTIONid>(MotionState::TURN_LEFT, runId));
-
 	}
-	else if (!m_meshFileName.compare("Donzo2")){
-		ACTIONid idleId = m_actor.GetBodyAction(NULL, "Idle");
-		ACTIONid runId = m_actor.GetBodyAction(NULL, "Run");
-		ACTIONid walkId = m_actor.GetBodyAction(NULL, "Walk");
-		ACTIONid dieId = m_actor.GetBodyAction(NULL, "Die");
-		ACTIONid attackId = m_actor.GetBodyAction(NULL, "Attack1");
-		ACTIONid damagedId = m_actor.GetBodyAction(NULL, "DamageL");
 
-		m_mapIndex2Action.insert(std::pair<ActionType, ACTIONid>(ACTION_IDLE, idleId));
-		m_mapIndex2Action.insert(std::pair<ActionType, ACTIONid>(ACTION_RUN, runId));
-		m_mapIndex2Action.insert(std::pair<ActionType, ACTIONid>(ACTION_WALK, walkId));
-		m_mapIndex2Action.insert(std::pair<ActionType, ACTIONid>(ACTION_DIE, dieId));
-		m_mapIndex2Action.insert(std::pair<ActionType, ACTIONid>(ACTION_ATTACK, attackId));
-		m_mapIndex2Action.insert(std::pair<ActionType, ACTIONid>(ACTION_DAMAGED, damagedId));
-
-		m_mapState2Action.insert(std::pair<MotionState, ACTIONid>(MotionState::IDLE, idleId));
-		m_mapState2Action.insert(std::pair<MotionState, ACTIONid>(MotionState::DEAD, dieId));
-		m_mapState2Action.insert(std::pair<MotionState, ACTIONid>(MotionState::ATTACK, attackId));
-		m_mapState2Action.insert(std::pair<MotionState, ACTIONid>(MotionState::DAMAGED, damagedId));
-
-		m_mapState2Action.insert(std::pair<MotionState, ACTIONid>(MotionState::MOVE_BACKWARD, runId));
-		m_mapState2Action.insert(std::pair<MotionState, ACTIONid>(MotionState::MOVE_FORWARD, runId));
-		m_mapState2Action.insert(std::pair<MotionState, ACTIONid>(MotionState::MOVE_LEFT, runId));
-		m_mapState2Action.insert(std::pair<MotionState, ACTIONid>(MotionState::TURN_LEFT, runId));
-		m_mapState2Action.insert(std::pair<MotionState, ACTIONid>(MotionState::TURN_RIGHT, runId));
-		m_mapState2Action.insert(std::pair<MotionState, ACTIONid>(MotionState::MOVE_RIGHT, runId));
-
-	}
-	else{
-		return;
-	}
 	m_curActionId = m_mapIndex2Action[ACTION_IDLE];
 	m_actor.SetCurrentAction(NULL, 0, m_curActionId);
 	m_actor.Play(START, 0.0f, FALSE, TRUE);
 
 	m_curState = MotionState::IDLE;
+	m_curActionType = ActionType::ACTION_IDLE;
 
 	m_rotateVel = 15;
 	m_moveVel = 10;
@@ -438,6 +459,9 @@ void Character::initialize(const SCENEid &sceneId,
 void Character::update(int skip, int newState){
 
 	bool success = false;
+	if (readChrBlood() == 0){
+		newState = MotionState::DEAD;
+	}
 	if (m_curState == MotionState::COOL_DOWN){
 		m_coolDownCnt--;
 		if (m_coolDownCnt < 0){
@@ -466,15 +490,38 @@ void Character::update(int skip, int newState){
 		//}
 		
 	}
+	//audio
+	if (m_curAudioIndex != m_mapActionType2AudioIndex[m_curActionType]){
+		std::string fileName = m_mapAudioIndex2FileName[m_mapActionType2AudioIndex[m_curActionType]];
+		if (fileName.length() != 0){
+			char *audioFileName = new char[fileName.length()+1];
+			for (int i = 0; i < fileName.length(); ++i){
+				audioFileName[i] = fileName[i];
+			}
+			audioFileName[fileName.length()] = '\0';
+			//strcpy_s(audioFileName, fileName.length() , fileName.c_str());
+			m_fnAudio.Load(audioFileName);
+			//m_fnAudio.Load("male_run_a");
+			m_fnAudio.Play(m_mapAudioIndex2PlayMode[m_mapActionType2AudioIndex[m_curActionType]]);
+			delete[] audioFileName;
+		}
+		else{
+			m_fnAudio.Play(ONCE);
+		}
+		m_curAudioIndex = m_mapActionType2AudioIndex[m_curActionType];
+
+	}
+
 
 	//animation
-
 	if (newState == (int)MotionState::COOL_DOWN){		//if is in cd, 
 		m_actor.Play(LOOP, (float)skip, FALSE, TRUE);
 	}else if(m_mapState2Action[(MotionState)newState] != m_curActionId){		//action changed
 		m_curActionId = m_mapState2Action[(MotionState)newState];
 		m_actor.SetCurrentAction(NULL, 0, m_curActionId, 5.0f);
 		m_actor.Play(START, 0.0f, FALSE, TRUE);
+
+		m_curActionType = m_mapActionId2ActionType[m_curActionId];
 	}
 	else{													//action not change;
 		if (m_curActionId == m_mapIndex2Action[ActionType::ACTION_DIE]){
@@ -521,7 +568,6 @@ void Character::update(int skip, int newState){
 		
 		success = m_actor.TurnRight(mouseRotate);
 		mouseInput.mouseVelX = 0;
-
 	}
 
 	if (newState&MotionState::TURN_RIGHT){

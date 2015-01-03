@@ -5,8 +5,43 @@
 #include <math.h>
 #include <string>
 #include "Mouse.h"
+#include <stdlib.h>
 
 extern Mouse mouseInput;
+
+
+enum ActionType{
+	ACTION_IDLE = 0,
+	ACTION_RUN = 1,
+	ACTION_WALK = 2,
+	ACTION_DIE = 3,
+	ACTION_ATTACK = 4,
+	ACTION_DAMAGED = 5
+};
+
+
+enum MotionState{
+	//live status
+	IDLE = 0,
+	DEAD = 1,
+
+	//attack related status
+	ATTACK = 2,
+	DAMAGED = ATTACK << 1,
+	COOL_DOWN = DAMAGED << 1,
+
+	//moving  start from 256
+	MOVE_FORWARD = 1 << 8,
+	MOVE_BACKWARD = MOVE_FORWARD << 1,
+	MOVE_LEFT = MOVE_BACKWARD << 1,
+	MOVE_RIGHT = MOVE_LEFT << 1,
+	TURN_LEFT = MOVE_RIGHT << 1,
+	TURN_RIGHT = TURN_LEFT << 1,
+	MOVE_LEFT_FORWARD = MOVE_LEFT + MOVE_FORWARD,
+	MOVE_LEFT_BACKWARD = MOVE_LEFT + MOVE_BACKWARD,
+	MOVE_RIGHT_FORWARD = MOVE_RIGHT + MOVE_FORWARD,
+	MOVE_RIGHT_BACKWARD = MOVE_RIGHT + MOVE_BACKWARD
+};
 
 class GameObject{
 public:
@@ -322,38 +357,7 @@ private:
 
 */
 
-enum ActionType{
-	ACTION_IDLE = 0,
-	ACTION_RUN = 1,
-	ACTION_WALK = 2,
-	ACTION_DIE = 3,
-	ACTION_ATTACK = 4,
-	ACTION_DAMAGED = 5
-};
 
-
-enum MotionState{
-	//live status
-	IDLE = 0,
-	DEAD = 1,
-
-	//attack related status
-	ATTACK = 2,
-	DAMAGED = 3,
-	COOL_DOWN = 4,
-
-	//moving  start from 256
-	MOVE_FORWARD = 1 << 8,
-	MOVE_BACKWARD = MOVE_FORWARD << 1,
-	MOVE_LEFT = MOVE_BACKWARD << 1,
-	MOVE_RIGHT = MOVE_LEFT << 1,
-	TURN_LEFT = MOVE_RIGHT << 1,
-	TURN_RIGHT = TURN_LEFT << 1,
-	MOVE_LEFT_FORWARD = MOVE_LEFT + MOVE_FORWARD,
-	MOVE_LEFT_BACKWARD = MOVE_LEFT + MOVE_BACKWARD,
-	MOVE_RIGHT_FORWARD = MOVE_RIGHT + MOVE_FORWARD,
-	MOVE_RIGHT_BACKWARD = MOVE_RIGHT + MOVE_BACKWARD
-};
 
 
 
@@ -391,13 +395,10 @@ public:
 
 	int modifyChrBlood(int bloodDiff){
 		m_chrBlood.modifyBlood(bloodDiff);
-		if (m_chrBlood.getBlood() == 0){
+		if (m_chrBlood.getBlood() <= 0){
 			m_curState = MotionState::DEAD;
 		}
-		//		blood += bloodDiff;
-		//		if(blood <= 0){
-		//			m_curState = MotionState::DEAD;
-		//		}
+
 		return m_chrBlood.getBlood();
 	}
 
@@ -459,7 +460,6 @@ public:
 			this->actorHeight = other.actorHeight;
 			this->m_actor.ID(this->m_actorId);
 			this->m_chrBlood = other.m_chrBlood;
-			this->blood = other.blood;
 		}
 		return *this;
 	}
@@ -473,9 +473,11 @@ private:
 	CHARACTERid m_actorId;
 	OBJECTid m_dummyCameraId;
 	ROOMid m_terrianRoomId;
+	AUDIOid m_audioSourceId;
 
 	//player controller
 	FnCharacter m_actor;
+	FnAudio m_fnAudio;
 
 	//mesh info
 	std::string m_meshFileName;
@@ -483,19 +485,29 @@ private:
 	//state info
 	std::string m_characterName;
 	Blood m_chrBlood;
-	int blood;
-	float m_fPos3[3], m_fDir3[3], m_uDir3[3];
-	float m_moveVel, m_rotateVel;
 	MotionState m_curState;
 	ACTIONid m_curActionId;
-	int m_coolDownCnt;
+	ActionType m_curActionType;
+	int m_curAudioIndex;
 	bool m_isOnCameraFocus;
+
+	int m_coolDownCnt;
+
+	//property
+	float m_fPos3[3], m_fDir3[3], m_uDir3[3];
+	float m_moveVel, m_rotateVel;
+
+
+	//audio mapping
+	std::map<ActionType, int> m_mapActionType2AudioIndex;
+	std::map<int, int> m_mapAudioIndex2PlayMode;
+	std::map<int, std::string> m_mapAudioIndex2FileName;
 
 
 	//action mapping
 	std::map<MotionState, ACTIONid> m_mapState2Action;
 	std::map<ActionType, ACTIONid> m_mapIndex2Action;
-
+	std::map<ACTIONid, ActionType> m_mapActionId2ActionType;
 	//character info
 	float 	actorHeight;
 };

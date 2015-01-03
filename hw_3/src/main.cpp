@@ -12,6 +12,9 @@ OBJECTid cameraID, terrainID, lightID;
 CHARACTERid actorID;
 ACTIONid idleID, runID, curPoseID;
 
+//music
+AUDIOid bckMiscID, bottonMiscID;
+
 ROOMid terrainRoomID = FAILED_ID;
 TEXTid textID = FAILED_ID;
 TEXTid textCharID = FAILED_ID;
@@ -71,6 +74,7 @@ void FyMain(int argc, char **argv)
 	FySetModelPath("..\\Data\\NTU5\\Scenes");
 	FySetTexturePath("..\\Data\\NTU5\\Scenes\\Textures");
 	FySetScenePath("..\\Data\\NTU5\\Scenes");
+	FySetAudioPath("..\\Data\\NTU5\\Audio");
 
 	//create a viewport
 	viewportID = FyCreateViewport(0, 0, viewPortWidth, viewPortHeight);
@@ -140,7 +144,18 @@ void FyMain(int argc, char **argv)
    textID = FyCreateText("Trebuchet MS", 18, FALSE, FALSE);
    textCharID = FyCreateText("Trebuchet MS", 40, TRUE, FALSE);
 
-   // set Hotkeys
+   //set up audio
+	bckMiscID = FyCreateAudio();
+	FnAudio fnAudio(bckMiscID);
+	fnAudio.Load("game_bckgnd");
+	fnAudio.SetVolume(0.1);
+	fnAudio.Play(LOOP);
+
+	bottonMiscID = FyCreateAudio();
+	FnAudio fnBottonAudio(bottonMiscID);
+	fnBottonAudio.Load("menu_botton_on");
+
+  // set Hotkeys
    /*
    FyDefineHotKey(FY_ESCAPE, QuitGame, FALSE);  // escape for quiting the game
    FyDefineHotKey(FY_UP, Movement, FALSE);      // Up for moving forward

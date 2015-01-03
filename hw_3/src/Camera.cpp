@@ -251,8 +251,8 @@ void moveCamera(int action, OBJECTid tID, OBJECTid cID, OBJECTid dummyID, OBJECT
 
 Camera::Camera(){
 	m_fMouseVel2AngleVelFactor = 0.5;
-	m_fMaxVerAngle = 1;
-	m_fMinVerAngle = -1;
+	m_fMaxVerAngle = 0.5;
+	m_fMinVerAngle = -0.8;
 	m_fMaxVerAngleVel = 0.03;
 }
 
