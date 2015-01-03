@@ -378,17 +378,17 @@ void Character::initialize(const SCENEid &sceneId,
 		m_mapIndex2Action.insert(std::pair<ActionType, ACTIONid>(ACTION_ATTACK, attackId));
 		m_mapIndex2Action.insert(std::pair<ActionType, ACTIONid>(ACTION_DAMAGED, damagedId));
 
-		m_mapState2Action.insert(std::pair<ActorState, ACTIONid>(ActorState::IDLE, idleId));
-		m_mapState2Action.insert(std::pair<ActorState, ACTIONid>(ActorState::DEAD, dieId));
-		m_mapState2Action.insert(std::pair<ActorState, ACTIONid>(ActorState::ATTACK, attackId));
-		m_mapState2Action.insert(std::pair<ActorState, ACTIONid>(ActorState::DAMAGED, damagedId));
+		m_mapState2Action.insert(std::pair<MotionState, ACTIONid>(MotionState::IDLE, idleId));
+		m_mapState2Action.insert(std::pair<MotionState, ACTIONid>(MotionState::DEAD, dieId));
+		m_mapState2Action.insert(std::pair<MotionState, ACTIONid>(MotionState::ATTACK, attackId));
+		m_mapState2Action.insert(std::pair<MotionState, ACTIONid>(MotionState::DAMAGED, damagedId));
 
-		m_mapState2Action.insert(std::pair<ActorState, ACTIONid>(ActorState::MOVE_BACKWARD, runId));
-		m_mapState2Action.insert(std::pair<ActorState, ACTIONid>(ActorState::MOVE_FORWARD, runId));
-		m_mapState2Action.insert(std::pair<ActorState, ACTIONid>(ActorState::MOVE_LEFT, runId));
-		m_mapState2Action.insert(std::pair<ActorState, ACTIONid>(ActorState::MOVE_RIGHT, runId));
-		m_mapState2Action.insert(std::pair<ActorState, ACTIONid>(ActorState::MOVE_LEFT, runId));
-		m_mapState2Action.insert(std::pair<ActorState, ACTIONid>(ActorState::TURN_LEFT, runId));
+		m_mapState2Action.insert(std::pair<MotionState, ACTIONid>(MotionState::MOVE_BACKWARD, runId));
+		m_mapState2Action.insert(std::pair<MotionState, ACTIONid>(MotionState::MOVE_FORWARD, runId));
+		m_mapState2Action.insert(std::pair<MotionState, ACTIONid>(MotionState::MOVE_LEFT, runId));
+		m_mapState2Action.insert(std::pair<MotionState, ACTIONid>(MotionState::MOVE_RIGHT, runId));
+		m_mapState2Action.insert(std::pair<MotionState, ACTIONid>(MotionState::MOVE_LEFT, runId));
+		m_mapState2Action.insert(std::pair<MotionState, ACTIONid>(MotionState::TURN_LEFT, runId));
 
 	}
 	else if (!m_meshFileName.compare("Donzo2")){
@@ -406,17 +406,17 @@ void Character::initialize(const SCENEid &sceneId,
 		m_mapIndex2Action.insert(std::pair<ActionType, ACTIONid>(ACTION_ATTACK, attackId));
 		m_mapIndex2Action.insert(std::pair<ActionType, ACTIONid>(ACTION_DAMAGED, damagedId));
 
-		m_mapState2Action.insert(std::pair<ActorState, ACTIONid>(ActorState::IDLE, idleId));
-		m_mapState2Action.insert(std::pair<ActorState, ACTIONid>(ActorState::DEAD, dieId));
-		m_mapState2Action.insert(std::pair<ActorState, ACTIONid>(ActorState::ATTACK, attackId));
-		m_mapState2Action.insert(std::pair<ActorState, ACTIONid>(ActorState::DAMAGED, damagedId));
+		m_mapState2Action.insert(std::pair<MotionState, ACTIONid>(MotionState::IDLE, idleId));
+		m_mapState2Action.insert(std::pair<MotionState, ACTIONid>(MotionState::DEAD, dieId));
+		m_mapState2Action.insert(std::pair<MotionState, ACTIONid>(MotionState::ATTACK, attackId));
+		m_mapState2Action.insert(std::pair<MotionState, ACTIONid>(MotionState::DAMAGED, damagedId));
 
-		m_mapState2Action.insert(std::pair<ActorState, ACTIONid>(ActorState::MOVE_BACKWARD, runId));
-		m_mapState2Action.insert(std::pair<ActorState, ACTIONid>(ActorState::MOVE_FORWARD, runId));
-		m_mapState2Action.insert(std::pair<ActorState, ACTIONid>(ActorState::MOVE_LEFT, runId));
-		m_mapState2Action.insert(std::pair<ActorState, ACTIONid>(ActorState::TURN_LEFT, runId));
-		m_mapState2Action.insert(std::pair<ActorState, ACTIONid>(ActorState::TURN_RIGHT, runId));
-		m_mapState2Action.insert(std::pair<ActorState, ACTIONid>(ActorState::MOVE_RIGHT, runId));
+		m_mapState2Action.insert(std::pair<MotionState, ACTIONid>(MotionState::MOVE_BACKWARD, runId));
+		m_mapState2Action.insert(std::pair<MotionState, ACTIONid>(MotionState::MOVE_FORWARD, runId));
+		m_mapState2Action.insert(std::pair<MotionState, ACTIONid>(MotionState::MOVE_LEFT, runId));
+		m_mapState2Action.insert(std::pair<MotionState, ACTIONid>(MotionState::TURN_LEFT, runId));
+		m_mapState2Action.insert(std::pair<MotionState, ACTIONid>(MotionState::TURN_RIGHT, runId));
+		m_mapState2Action.insert(std::pair<MotionState, ACTIONid>(MotionState::MOVE_RIGHT, runId));
 
 	}
 	else{
@@ -426,7 +426,7 @@ void Character::initialize(const SCENEid &sceneId,
 	m_actor.SetCurrentAction(NULL, 0, m_curActionId);
 	m_actor.Play(START, 0.0f, FALSE, TRUE);
 
-	m_curState = ActorState::IDLE;
+	m_curState = MotionState::IDLE;
 
 	m_rotateVel = 15;
 	m_moveVel = 10;
@@ -438,28 +438,28 @@ void Character::initialize(const SCENEid &sceneId,
 void Character::update(int skip, int newState){
 
 	bool success = false;
-	if (m_curState == ActorState::COOL_DOWN){
+	if (m_curState == MotionState::COOL_DOWN){
 		m_coolDownCnt--;
 		if (m_coolDownCnt < 0){
-			newState = ActorState::IDLE;
+			newState = MotionState::IDLE;
 		}
 		else{
-			newState = ActorState::COOL_DOWN;
+			newState = MotionState::COOL_DOWN;
 		}
-	}else if (m_curState == ActorState::DEAD){
-		newState = ActorState::DEAD;
+	}else if (m_curState == MotionState::DEAD){
+		newState = MotionState::DEAD;
 	}
 	else{
 		//switch (newState){		//ensure state is one of defined state
-		//case (int)ActorState::IDLE:
-		//case (int)ActorState::MOVE_FORWARD:
-		//case (int)ActorState::MOVE_BACKWARD:
-		//case (int)ActorState::MOVE_LEFT:
-		//case (int)ActorState::MOVE_RIGHT:
-		//case (int)ActorState::TURN_LEFT:
-		//case (int)ActorState::TURN_RIGHT:
-		//case (int)ActorState::ATTACK:
-		//case (int)ActorState::DAMAGED:
+		//case (int)MotionState::IDLE:
+		//case (int)MotionState::MOVE_FORWARD:
+		//case (int)MotionState::MOVE_BACKWARD:
+		//case (int)MotionState::MOVE_LEFT:
+		//case (int)MotionState::MOVE_RIGHT:
+		//case (int)MotionState::TURN_LEFT:
+		//case (int)MotionState::TURN_RIGHT:
+		//case (int)MotionState::ATTACK:
+		//case (int)MotionState::DAMAGED:
 		//	break;
 		//default:
 		//	newState = m_curState;
@@ -469,10 +469,10 @@ void Character::update(int skip, int newState){
 
 	//animation
 
-	if (newState == (int)ActorState::COOL_DOWN){		//if is in cd, 
+	if (newState == (int)MotionState::COOL_DOWN){		//if is in cd, 
 		m_actor.Play(LOOP, (float)skip, FALSE, TRUE);
-	}else if(m_mapState2Action[(ActorState)newState] != m_curActionId){		//action changed
-		m_curActionId = m_mapState2Action[(ActorState)newState];
+	}else if(m_mapState2Action[(MotionState)newState] != m_curActionId){		//action changed
+		m_curActionId = m_mapState2Action[(MotionState)newState];
 		m_actor.SetCurrentAction(NULL, 0, m_curActionId, 5.0f);
 		m_actor.Play(START, 0.0f, FALSE, TRUE);
 	}
@@ -485,31 +485,31 @@ void Character::update(int skip, int newState){
 		}
 	}
 
-	if (newState&ActorState::IDLE){
+	if (newState&MotionState::IDLE){
 		//
 	}
 
-	if (newState&ActorState::DEAD){
+	if (newState&MotionState::DEAD){
 		//
 	}
 
-	if (newState&ActorState::MOVE_FORWARD){
+	if (newState&MotionState::MOVE_FORWARD){
 		success = m_actor.MoveForward(m_moveVel, TRUE, false, FALSE, TRUE);
 	}
 
-	if (newState&ActorState::MOVE_BACKWARD){
+	if (newState&MotionState::MOVE_BACKWARD){
 		success = m_actor.MoveForward(-m_moveVel, TRUE, false, FALSE, TRUE);
 	}
 
-	if (newState&ActorState::MOVE_LEFT){
+	if (newState&MotionState::MOVE_LEFT){
 		success = m_actor.MoveRight(-0.5*m_moveVel, TRUE, false, FALSE, TRUE);
 	}
 
-	if (newState&ActorState::MOVE_RIGHT){
+	if (newState&MotionState::MOVE_RIGHT){
 		success = m_actor.MoveRight(0.5*m_moveVel, TRUE, false, FALSE, TRUE);
 	}
 
-	if (newState&ActorState::TURN_LEFT){
+	if (newState&MotionState::TURN_LEFT){
 		float mouseRotate = mouseInput.mouseVelX;
 		
 		if (mouseRotate < -m_rotateVel){
@@ -524,7 +524,7 @@ void Character::update(int skip, int newState){
 
 	}
 
-	if (newState&ActorState::TURN_RIGHT){
+	if (newState&MotionState::TURN_RIGHT){
 		float mouseRotate = mouseInput.mouseVelX;
 		if (mouseRotate > m_rotateVel){
 			mouseRotate = m_rotateVel;
@@ -536,13 +536,13 @@ void Character::update(int skip, int newState){
 		mouseInput.mouseVelX = 0;
 	}
 
-	if (newState&ActorState::DAMAGED){
+	if (newState&MotionState::DAMAGED){
 		m_coolDownCnt = 15;
-		newState = ActorState::COOL_DOWN;
+		newState = MotionState::COOL_DOWN;
 	}
 
 	//update state 
-	m_curState = (ActorState)newState;
+	m_curState = (MotionState)newState;
 	m_actor.GetPosition(m_fPos3);
 	m_actor.GetDirection(m_fDir3, m_uDir3);
 	isCollision = success;

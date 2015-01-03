@@ -18,7 +18,7 @@ bool CharacterManageSystem::addCharacter(Character &character, bool isLocalPlaye
 		return true;
 	}
 	m_mapCharacterId2Character.insert(std::pair<CHARACTERid, Character*>(characterId, pCharacter));
-	m_mapCharacterId2NewState.insert(std::pair<CHARACTERid, ActorState>(characterId, ActorState::IDLE));	
+	m_mapCharacterId2NewState.insert(std::pair<CHARACTERid, MotionState>(characterId, MotionState::IDLE));	
 	m_mapStrName2CharacterId.insert(std::pair<std::string, CHARACTERid>(character.getCharacterName(), characterId));
 	if(isLocalPlayer){	
 		m_localPlayerId = characterId;
@@ -32,41 +32,41 @@ void CharacterManageSystem::updateCharacterInputs(){
 	//for local player
    	int newState = 0;
 	if(FyCheckHotKeyStatus(FY_W)){
-		newState = newState | ActorState::MOVE_FORWARD;
+		newState = newState | MotionState::MOVE_FORWARD;
 		std::cout<<"up key\n";
 	}												  
 	if(FyCheckHotKeyStatus(FY_S)){
-		newState = newState | ActorState::MOVE_BACKWARD;
+		newState = newState | MotionState::MOVE_BACKWARD;
 		std::cout<<"down key\n";
 	}
 	if(FyCheckHotKeyStatus(FY_A)){
-		newState = newState | ActorState::MOVE_LEFT;
+		newState = newState | MotionState::MOVE_LEFT;
 		std::cout<<"left key\n";
 	}
 	if(FyCheckHotKeyStatus(FY_D)){
-		newState = newState | ActorState::MOVE_RIGHT;
+		newState = newState | MotionState::MOVE_RIGHT;
 		std::cout<<"right key\n";
 	}
 
 	if (FyCheckHotKeyStatus(FY_Q)){
-		newState = newState | ActorState::TURN_LEFT;
+		newState = newState | MotionState::TURN_LEFT;
 		std::cout << "left key\n";
 	}
 	if (FyCheckHotKeyStatus(FY_E)){
-		newState = newState | ActorState::TURN_RIGHT;
+		newState = newState | MotionState::TURN_RIGHT;
 		std::cout << "right key\n";
 	}
 
 	if (FyCheckHotKeyStatus(FY_F)){
-		newState = newState | ActorState::ATTACK;
+		newState = newState | MotionState::ATTACK;
 		std::cout<<"attak key\n";
 	}
 	if ((mouseInput.mouseVelX > 0)||(mouseInput.mousePosX>(wndWidth*0.9))){
-		newState = newState | ActorState::TURN_RIGHT;
+		newState = newState | MotionState::TURN_RIGHT;
 	}
 
 	if ((mouseInput.mouseVelX < 0) || (mouseInput.mousePosX < 10)){
-		newState = newState | ActorState::TURN_LEFT;
+		newState = newState | MotionState::TURN_LEFT;
 	}
 
 	m_mapCharacterId2NewState[m_localPlayerId] = newState;
@@ -91,7 +91,7 @@ void CharacterManageSystem::update(int skip){
 //		(m_mapCharacterId2Character[m_mapStrName2CharacterId["Donzo2"] ])->modifyChrBlood(-1);	   //used to test die
 		std::map<CHARACTERid, int>::iterator chrIter = m_mapCharacterId2NewState.begin();
 		for(;chrIter != m_mapCharacterId2NewState.end(); ++chrIter){
-			if(chrIter->second == (int)ActorState::ATTACK){
+			if(chrIter->second == (int)MotionState::ATTACK){
 				//trigger fight system
 				m_FightSystem.judgeAttack(chrIter->first);
 			}
@@ -102,9 +102,9 @@ void CharacterManageSystem::update(int skip){
 	{
 		std::map<CHARACTERid, Character*>::iterator chrIter = m_mapCharacterId2Character.begin();
 		for(; chrIter != m_mapCharacterId2Character.end(); ++chrIter){
-			if ((chrIter->second)->getCurrentState() == ActorState(COOL_DOWN)) //state changes from character
+			if ((chrIter->second)->getCurrentState() == MotionState(COOL_DOWN)) //state changes from character
 			{
-				m_mapCharacterId2NewState[(chrIter->first)] = ActorState(COOL_DOWN);
+				m_mapCharacterId2NewState[(chrIter->first)] = MotionState(COOL_DOWN);
 			}
 		}
 	}
@@ -131,7 +131,7 @@ void CharacterManageSystem::gotAttacked(CHARACTERid characterId,float damage)
 	int blood = character->modifyChrBlood(-1 * damage);
 	if (blood)
 	{
-		m_mapCharacterId2NewState[characterId] = ActorState::DAMAGED;
+		m_mapCharacterId2NewState[characterId] = MotionState::DAMAGED;
 	}
 
 }

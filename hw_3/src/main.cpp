@@ -36,7 +36,7 @@ int viewPortHeight = 768;
 int frame = 0;
 
 int oldX, oldY, oldXM, oldYM, oldXMM, oldYMM;
-std::map<ActorState, ACTIONid> state2ActionTable;
+std::map<MotionState, ACTIONid> state2ActionTable;
 //BOOL4 poseChange = FALSE;
 
 //hotkey callback

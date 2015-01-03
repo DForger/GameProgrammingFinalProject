@@ -90,12 +90,12 @@
     <ClCompile Include="src\Mouse.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Mouse.h" />
     <ClInclude Include="src\basic.h" />
     <ClInclude Include="src\camera.h" />
     <ClInclude Include="src\Character.h" />
     <ClInclude Include="src\CharacterManageSystem.h" />
     <ClInclude Include="src\FightSystem.h" />
+    <ClInclude Include="src\Mouse.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
