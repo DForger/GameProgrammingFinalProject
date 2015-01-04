@@ -15,43 +15,108 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\Camera.cpp">
+    <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Character.cpp">
+    <ClCompile Include="src\local\Camera.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\main.cpp">
+    <ClCompile Include="src\local\Character.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\CharacterManageSystem.cpp">
+    <ClCompile Include="src\local\CharacterManageSystem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\FightSystem.cpp">
+    <ClCompile Include="src\local\CommonObjectManageSystem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\main-origin.cpp">
+    <ClCompile Include="src\local\FightSystem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Mouse.cpp">
+    <ClCompile Include="src\local\MagicBall.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\local\Mouse.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\net\game_client.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\net\game_tree.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\net\game_updater_pseudo.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\net\game_updater_real.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\net\json_socket.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\local\Fire.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\camera.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="src\basic.h">
+      <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Character.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="src\enum\action_type.h">
+      <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\CharacterManageSystem.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="src\enum\motion_state.h">
+      <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\FightSystem.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="src\local\camera.h">
+      <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Mouse.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="src\local\Character.h">
+      <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\local\CharacterManageSystem.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\local\CommonObjectManageSystem.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\local\FightSystem.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\local\MagicBall.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\local\Mouse.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\net\callback.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\net\game_client.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\net\game_tree.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\net\game_updater.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\net\game_updater_pseudo.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\net\game_updater_real.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\net\json_socket.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\local\Fire.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="C:\Users\PAL\Desktop\jsoncpp-master\build\vs71\debug\lib_json\json_vc71_libmtd.lib">
+      <Filter>Source Files</Filter>
+    </Library>
   </ItemGroup>
 </Project>

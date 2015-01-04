@@ -1,19 +1,20 @@
 #pragma once
 
-#include "Character.h"
+
 #include <string>
-#include "FightSystem.h"
+#include "Character.h"
 #include "Mouse.h"
+#include "net/game_updater_real.h"
 
 extern Mouse mouseInput;
-
 extern int wndWidth, wndHeight;
+extern bool bLeftButtonDown;
 
-class CharacterManageSystem
-{
+class CharacterManageSystem {
+
 public:
-	CharacterManageSystem(void);
-	
+	CharacterManageSystem(GmUpdaterReal *);
+
 	~CharacterManageSystem(void);
 
 	void update(int skip);
@@ -22,7 +23,7 @@ public:
 
 	void removeCharacter(CHARACTERid characterId);
 
-	void gotAttacked(CHARACTERid characterId,float damage);
+	void gotAttacked(CHARACTERid characterId, float damage);
 
 	int getCharacterblood(CHARACTERid characterId);
 
@@ -30,15 +31,20 @@ public:
 
 	Character* getCameraActor();
 
+	Character* findCharacter(CHARACTERid chrId);
+	Character* findCharacter(GEOMETRYid geoId);
+
 	void changActorByTAB();
+
 private:
 	void updateCharacterInputs();
 
 private:
+	std::map<GEOMETRYid, Character* > m_mapGeoId2Character;
 	std::map<CHARACTERid, Character*> m_mapCharacterId2Character;
 	std::map<CHARACTERid, int> m_mapCharacterId2NewState;
 	std::map<std::string, CHARACTERid> m_mapStrName2CharacterId; 
-	FightSystem m_FightSystem;
 	CHARACTERid m_localPlayerId;
+	GmUpdaterReal *game_updater;
 };
 

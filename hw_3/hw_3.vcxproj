@@ -10,6 +10,45 @@
       <Platform>Win32</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="src\local\Camera.cpp" />
+    <ClCompile Include="src\local\Character.cpp" />
+    <ClCompile Include="src\local\CharacterManageSystem.cpp" />
+    <ClCompile Include="src\local\CommonObjectManageSystem.cpp" />
+    <ClCompile Include="src\local\FightSystem.cpp" />
+    <ClCompile Include="src\local\Fire.cpp" />
+    <ClCompile Include="src\local\MagicBall.cpp" />
+    <ClCompile Include="src\local\Mouse.cpp" />
+    <ClCompile Include="src\net\game_client.cpp" />
+    <ClCompile Include="src\net\game_tree.cpp" />
+    <ClCompile Include="src\net\game_updater_pseudo.cpp" />
+    <ClCompile Include="src\net\game_updater_real.cpp" />
+    <ClCompile Include="src\net\json_socket.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\basic.h" />
+    <ClInclude Include="src\enum\action_type.h" />
+    <ClInclude Include="src\enum\motion_state.h" />
+    <ClInclude Include="src\local\camera.h" />
+    <ClInclude Include="src\local\Character.h" />
+    <ClInclude Include="src\local\CharacterManageSystem.h" />
+    <ClInclude Include="src\local\CommonObjectManageSystem.h" />
+    <ClInclude Include="src\local\FightSystem.h" />
+    <ClInclude Include="src\local\Fire.h" />
+    <ClInclude Include="src\local\MagicBall.h" />
+    <ClInclude Include="src\local\Mouse.h" />
+    <ClInclude Include="src\net\callback.h" />
+    <ClInclude Include="src\net\game_client.h" />
+    <ClInclude Include="src\net\game_tree.h" />
+    <ClInclude Include="src\net\game_updater.h" />
+    <ClInclude Include="src\net\game_updater_pseudo.h" />
+    <ClInclude Include="src\net\game_updater_real.h" />
+    <ClInclude Include="src\net\json_socket.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="C:\Users\PAL\Desktop\jsoncpp-master\build\vs71\debug\lib_json\json_vc71_libmtd.lib" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{CEBF18FD-8B07-42CD-9AFB-15CFDB7DCB7E}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
@@ -55,6 +94,8 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>D:\workspace\Course\GameProgramming\homework3-withNet\hw_3\hw_3\src;C:\Users\PAL\Desktop\jsoncpp-master\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -80,22 +121,6 @@
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClCompile Include="src\Camera.cpp" />
-    <ClCompile Include="src\Character.cpp" />
-    <ClCompile Include="src\CharacterManageSystem.cpp" />
-    <ClCompile Include="src\FightSystem.cpp" />
-    <ClCompile Include="src\main-origin.cpp" />
-    <ClCompile Include="src\main.cpp" />
-    <ClCompile Include="src\Mouse.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="src\camera.h" />
-    <ClInclude Include="src\Character.h" />
-    <ClInclude Include="src\CharacterManageSystem.h" />
-    <ClInclude Include="src\FightSystem.h" />
-    <ClInclude Include="src\Mouse.h" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
