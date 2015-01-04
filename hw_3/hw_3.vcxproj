@@ -90,7 +90,6 @@
     <ClCompile Include="src\Mouse.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\basic.h" />
     <ClInclude Include="src\camera.h" />
     <ClInclude Include="src\Character.h" />
     <ClInclude Include="src\CharacterManageSystem.h" />

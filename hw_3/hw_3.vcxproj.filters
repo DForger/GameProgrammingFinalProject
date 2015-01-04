@@ -50,9 +50,6 @@
     <ClInclude Include="src\FightSystem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\basic.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\Mouse.h">
       <Filter>Header Files</Filter>
     </ClInclude>
