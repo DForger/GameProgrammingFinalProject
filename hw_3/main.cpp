@@ -76,6 +76,7 @@ int mouse_w = 20;
 int mouse_h = 30;
 
 bool bLeftButtonDown = false;
+bool bRightButtonDown = false;
 
 int oldX, oldY, oldXM, oldYM, oldXMM, oldYMM;
 std::map<MotionState, ACTIONid> state2ActionTable;
@@ -99,7 +100,8 @@ void ZoomCam(int, int);
 void ChangeActor(BYTE code, BOOL4 value);
 void setCamera();
 void showMenu(BYTE code, BOOL4 value);
-void updateMouseButtonStatus(int ,int);
+void mouseRButtonDown(int ,int);
+void mouseLButtonDown(int, int);
 void collisionTest();
 
 
@@ -132,7 +134,7 @@ void FyMain(int argc, char **argv)
 	FySetTexturePath("C:\\Fly2Data\\Scenes\\Textures");
 	FySetScenePath("C:\\Fly2Data\\Scenes");
 	FySetAudioPath("C:\\Fly2Data\\Audio");
-	FySetGameFXPath("C:\\Fly2Data\\GameFXFiles\\FX1");
+	FySetGameFXPath("C:\\Fly2Data\\GameFXFiles\\FX_Used");
 
 	//create a viewport
 	viewportID = FyCreateViewport(0, 0, viewPortWidth, viewPortHeight);
@@ -198,7 +200,8 @@ void FyMain(int argc, char **argv)
 
    // put the character on terrain
    float pos[3], fDir[3], uDir[3];
-   pos[0] = 3569.0, pos[1] = -3108; pos[2] = 100;
+   //pos[0] = 3569.0, pos[1] = -3108; pos[2] = 100;
+   pos[0] = 1000, pos[1] = -1000; pos[2] = 100;
 	fDir[0] = 1, fDir[1] = 0; fDir[2] = 0;
 	uDir[0] = 0, uDir[1] = 0, uDir[2] = 1;
 
@@ -226,8 +229,6 @@ void FyMain(int argc, char **argv)
 			game_updater.registerCharacter(it->second->game_id, ememy.getCharacterId());
 		}
     }
-	MagicBall* magicBall = new MagicBall(actor.getCharacterId(), sceneID, terrainID, fDir, uDir, pos);
-	objMgtSystem.addGameObject(magicBall);
 
 	cameraID = scene.CreateObject(CAMERA);
 	FnCamera camera;
@@ -289,7 +290,8 @@ void FyMain(int argc, char **argv)
    FyDefineHotKey(FY_TAB, ChangeActor, FALSE);
    FyDefineHotKey(FY_ESC, showMenu, FALSE);
    //define some mouse function
-   FyBindMouseFunction(LEFT_MOUSE, InitPivot, updateMouseButtonStatus, NULL, NULL);
+   FyBindMouseFunction(LEFT_MOUSE, InitPivot, mouseLButtonDown, NULL, NULL);
+   FyBindMouseFunction(RIGHT_MOUSE, InitPivot, mouseRButtonDown, NULL, NULL);
    //FyBindMouseFunction(LEFT_MOUSE, InitPivot, PivotCam, NULL, NULL);
   // FyBindMouseFunction(MIDDLE_MOUSE, InitZoom, ZoomCam, NULL, NULL);
    //FyBindMouseFunction(RIGHT_MOUSE, InitMove, MoveCam, NULL, NULL);
@@ -480,9 +482,14 @@ void PivotCam(int x, int y)
    }
 }
 
-void updateMouseButtonStatus(int x, int y){
+void mouseRButtonDown(int, int){
+	bRightButtonDown = true;
+}
+
+void mouseLButtonDown(int, int){
 	bLeftButtonDown = true;
 }
+
 
 
 /*----------------------------------

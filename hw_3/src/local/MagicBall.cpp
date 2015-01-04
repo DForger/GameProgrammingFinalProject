@@ -12,6 +12,7 @@ MagicBall::MagicBall()
 MagicBall::MagicBall(const OBJECTid parentId,
 	const SCENEid &sceneId,
 	const ROOMid &roomId,
+	char *name,
 	float *fDir,
 	float *uDir,
 	float *pos)
@@ -26,7 +27,7 @@ m_fSpeed(180){
 
 	m_fxSystemId = fnScene.CreateGameFXSystem();
 	m_fnFxSystem.ID(m_fxSystemId);
-	m_fnFxSystem.Load("shockwave", TRUE);
+	m_fnFxSystem.Load(name, TRUE);
 	m_fnFxSystem.SetParentObjectForAll(m_objectId);
 
 
@@ -38,6 +39,7 @@ m_fSpeed(180){
 void MagicBall::init(const OBJECTid parentId,
 	const SCENEid &sceneId,
 	const ROOMid &roomId,
+	char *name,
 	float *fDir,
 	float *uDir,
 	float *pos){
@@ -50,7 +52,7 @@ void MagicBall::init(const OBJECTid parentId,
 
 	m_fxSystemId = fnScene.CreateGameFXSystem();
 	m_fnFxSystem.ID(m_fxSystemId);
-	m_fnFxSystem.Load("shockwave", TRUE);
+	m_fnFxSystem.Load(name, TRUE);
 	m_fnFxSystem.SetParentObjectForAll(m_objectId);
 
 

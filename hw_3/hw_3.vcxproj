@@ -18,6 +18,7 @@
     <ClCompile Include="src\local\CommonObjectManageSystem.cpp" />
     <ClCompile Include="src\local\FightSystem.cpp" />
     <ClCompile Include="src\local\Fire.cpp" />
+    <ClCompile Include="src\local\HeavyAttackSpark.cpp" />
     <ClCompile Include="src\local\MagicBall.cpp" />
     <ClCompile Include="src\local\Mouse.cpp" />
     <ClCompile Include="src\net\game_client.cpp" />
@@ -36,6 +37,7 @@
     <ClInclude Include="src\local\CommonObjectManageSystem.h" />
     <ClInclude Include="src\local\FightSystem.h" />
     <ClInclude Include="src\local\Fire.h" />
+    <ClInclude Include="src\local\HeavyAttackSpark.h" />
     <ClInclude Include="src\local\MagicBall.h" />
     <ClInclude Include="src\local\Mouse.h" />
     <ClInclude Include="src\net\callback.h" />

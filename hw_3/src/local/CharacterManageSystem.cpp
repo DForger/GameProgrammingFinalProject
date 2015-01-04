@@ -70,6 +70,11 @@ void CharacterManageSystem::updateCharacterInputs(){
 	//	std::cout<<"right key\n";
 	}
 
+	if (FyCheckHotKeyStatus(FY_SHIFT)){
+		newState = newState | MotionState::BOOST;
+		//	std::cout<<"right key\n";
+	}
+
 	if (FyCheckHotKeyStatus(FY_F)){
 		newState = newState | MotionState::ATTACK;
 		attack = true;
@@ -80,6 +85,12 @@ void CharacterManageSystem::updateCharacterInputs(){
 		newState = newState | MotionState::ATTACK;
 		attack = true;
 		bLeftButtonDown = false;
+	}
+
+	if (bRightButtonDown){
+		newState = newState | MotionState::HEAVY_ATTACK;
+		attack = true;
+		bRightButtonDown = false;
 	}
 
 	if (mouseInput.mouseVelX > 0){

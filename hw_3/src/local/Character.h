@@ -10,6 +10,7 @@
 #include <stdlib.h>
 #include "basic.h"
 #include "MagicBall.h"
+#include "HeavyAttackSpark.h"
 #include "CommonObjectManageSystem.h"
 
 extern CommonObjectManageSystem objMgtSystem;

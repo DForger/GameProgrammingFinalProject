@@ -1,32 +1,24 @@
 #pragma once
 #include <FlyWin32.h>
 #include <basic.h>
-#include "Fire.h"
-
-#include "CommonObjectManageSystem.h"
-extern CommonObjectManageSystem objMgtSystem;
 
 
-class MagicBall
+class HeavyAttackSpark
 	: public GameObject
 {
 public:
-	MagicBall();
+	HeavyAttackSpark();
 
-	MagicBall(const OBJECTid parentId, 
+	HeavyAttackSpark(const OBJECTid parentId,
 		const SCENEid &sceneId,
-		const ROOMid &terrianRoomId,
-		char *name,
 		float *fDir = NULL,
 		float *uDir = NULL,
 		float *pos = NULL);
 
-	~MagicBall();
+	~HeavyAttackSpark();
 
 	void init(const OBJECTid parentId,
 		const SCENEid &sceneId,
-		const ROOMid &terrianRoomId,
-		char *name,
 		float *fDir = NULL,
 		float *uDir = NULL,
 		float *pos = NULL);
@@ -37,9 +29,6 @@ public:
 		return m_objectId;
 	}
 
-	ROOMid getRoomId(){
-		return m_roomId;
-	}
 
 	void getPos(float *pos, BOOL4 beWorldSpace = TRUE){
 		m_fnObject.GetPosition(pos, beWorldSpace);
@@ -49,14 +38,9 @@ public:
 		m_fnObject.GetDirection(fDir, uDir, beWorldSpace);
 	}
 
-	void collisionEvent(OBJECTid collidedObject);
-
 private:
-	float m_fSpeed;
-	float m_fDamage;
 	OBJECTid m_parentId;
 	OBJECTid m_objectId;
-	ROOMid m_roomId;
 	SCENEid m_sceneId;
 	GAMEFX_SYSTEMid m_fxSystemId;
 

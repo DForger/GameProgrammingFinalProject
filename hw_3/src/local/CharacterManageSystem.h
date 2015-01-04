@@ -9,6 +9,7 @@
 extern Mouse mouseInput;
 extern int wndWidth, wndHeight;
 extern bool bLeftButtonDown;
+extern bool bRightButtonDown;
 
 class CharacterManageSystem {
 

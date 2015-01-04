@@ -23,7 +23,7 @@ Fire::Fire(const OBJECTid parentId,
 
 	m_fxSystemId = fnScene.CreateGameFXSystem();
 	m_fnFxSystem.ID(m_fxSystemId);
-	m_fnFxSystem.Load("fire", TRUE);
+	m_fnFxSystem.Load("lightning", TRUE);
 	m_fnFxSystem.SetParentObjectForAll(m_objectId);
 }
 
@@ -41,7 +41,7 @@ void Fire::init(const OBJECTid parentId,
 
 	m_fxSystemId = fnScene.CreateGameFXSystem();
 	m_fnFxSystem.ID(m_fxSystemId);
-	m_fnFxSystem.Load("fire", TRUE);
+	m_fnFxSystem.Load("lightning", TRUE);
 	m_fnFxSystem.SetParentObjectForAll(m_objectId);
 }
 

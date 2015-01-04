@@ -57,6 +57,9 @@
     <ClCompile Include="src\local\Fire.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\local\HeavyAttackSpark.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\basic.h">
@@ -111,6 +114,9 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="src\local\Fire.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\local\HeavyAttackSpark.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>
